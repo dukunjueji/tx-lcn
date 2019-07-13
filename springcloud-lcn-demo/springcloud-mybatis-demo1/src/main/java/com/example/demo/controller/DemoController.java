@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/demo")
 public class DemoController {
+    ThreadLocal<Integer> ThradsingletonInt = new ThreadLocal<>();
 
     @Autowired
     private DemoService demoService;
@@ -25,24 +26,30 @@ public class DemoController {
 
     @RequestMapping("/list")
     @ResponseBody
-    public List<Test> list(){
+    public List<Test> list() {
+
         return demoService.list();
     }
 
 
     @RequestMapping("/save")
     @ResponseBody
-    public int save(String id, String name){
-        return demoService.save(id, name);
+    public int save(String id, String name, Integer num) throws InterruptedException {
+        ThradsingletonInt.set(num);
+        ThradsingletonInt.set(num + ThradsingletonInt.get());
+        System.out.println("开始");
+        Thread.sleep(5000);
+        System.out.println("结束");
+        return ThradsingletonInt.get();
+        //return demoService.save(id, name);
     }
 
     @PostMapping("notifyResult")
-    public String notifyResult(@RequestBody String jsonStr)
-    {
+    public String notifyResult(@RequestBody String jsonStr) {
         System.out.println("通知地址..." + jsonStr);
         String data = (String) JSONObject.parseObject(jsonStr).get("json");
         data = (String) JSONObject.parseObject(data).get("data");
-        byte[] serializers =  Base64Utils.decode(data);
+        byte[] serializers = Base64Utils.decode(data);
         TransactionInvocation transactionInvocation = SerializerUtils.parserTransactionInvocation(serializers);
 
         System.out.println(transactionInvocation.getMethodStr());

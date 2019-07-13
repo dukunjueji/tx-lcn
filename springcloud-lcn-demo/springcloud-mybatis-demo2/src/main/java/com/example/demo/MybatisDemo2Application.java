@@ -20,6 +20,7 @@ public class MybatisDemo2Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MybatisDemo2Application.class, args);
+		System.out.println("启动成功");
 	}
 
 	@Autowired

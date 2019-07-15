@@ -3,7 +3,6 @@ package com.example.demo.entity;
 /**
  * Created by lorne on 2017/6/26.
  */
-
 public class Test {
 
 

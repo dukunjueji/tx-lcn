@@ -18,8 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/demo")
 public class DemoController {
-    ThreadLocal<Integer> ThradsingletonInt = new ThreadLocal<>();
-
     @Autowired
     private DemoService demoService;
 
@@ -34,13 +32,13 @@ public class DemoController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public int save(String id, String name, Integer num) throws InterruptedException {
-        ThradsingletonInt.set(num);
-        ThradsingletonInt.set(num + ThradsingletonInt.get());
-        System.out.println("开始");
-        Thread.sleep(5000);
+    public int save(String name,Integer id) throws InterruptedException {
+        /*ThradsingletonInt.set(num);
+        ThradsingletonInt.set(num + ThradsingletonInt.get());*/
+        System.out.println("开始"+name);
+        Thread.sleep(6000);
         System.out.println("结束");
-        return ThradsingletonInt.get();
+        return 2;
         //return demoService.save(id, name);
     }
 

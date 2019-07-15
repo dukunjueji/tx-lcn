@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.codingapi.tx.annotation.TxTransaction;
 import com.example.demo.client.Demo2Client;
 import com.example.demo.client.Demo3Client;
@@ -34,6 +35,8 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public List<Test> list() {
+        System.out.println(JSON.toJSONString(demo2Client.list()));
+        System.out.println("获取测试2数据");
         return testMapper.findAll();
     }
 
@@ -45,8 +48,9 @@ public class DemoServiceImpl implements DemoService {
         testMapper.save("mybatis1");
 
         demo2Client.save(id, name);
+        //int i = 1/0;
 
-        demo3Client.save();
+        //demo3Client.save();
 
         return 2;
     }

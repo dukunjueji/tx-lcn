@@ -30,7 +30,7 @@ public class DemoController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public int save(String id, String name){
+    public int save(Integer id, String name){
         return demoService.save(id, name);
     }
 }

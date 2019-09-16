@@ -32,7 +32,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
 
     @Override
-    public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
+    public Object execute(ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
 
         logger.info("事务发起方...");
@@ -43,7 +43,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
         int state = 0;
 
-        final String groupId = TxCompensateLocal.current()==null?KidUtils.generateShortUuid():TxCompensateLocal.current().getGroupId();
+        final String groupId = TxCompensateLocal.current() == null ? KidUtils.generateShortUuid() : TxCompensateLocal.current().getGroupId();
 
         //创建事务组
         logger.debug("创建事务组并发送消息");
@@ -62,7 +62,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             state = 1;
             return obj;
         } catch (Throwable e) {
-            state = rollbackException(info,e);
+            state = rollbackException(info, e);
             throw e;
         } finally {
 
@@ -70,17 +70,17 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
             int rs = txManagerService.closeTransactionGroup(groupId, state);
 
-            int lastState = rs==-1?0:state;
+            int lastState = rs == -1 ? 0 : state;
 
             int executeConnectionError = 0;
 
             //控制本地事务的数据提交
             final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
-            if(waitTask!=null){
+            if (waitTask != null) {
                 waitTask.setState(lastState);
                 waitTask.signalTask();
 
-                while (!waitTask.isRemove()){
+                while (!waitTask.isRemove()) {
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -88,7 +88,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                     }
                 }
 
-                if(waitTask.getState()== TaskState.connectionError.getCode()){
+                if (waitTask.getState() == TaskState.connectionError.getCode()) {
                     //本地执行失败.
                     executeConnectionError = 1;
 
@@ -96,19 +96,19 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 }
             }
 
-            final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
+            final TxCompensateLocal compensateLocal = TxCompensateLocal.current();
 
             if (compensateLocal == null) {
                 long end = System.currentTimeMillis();
                 long time = end - start;
-                if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
+                if ((executeConnectionError == 1 && rs == 1) || (lastState == 1 && rs == 0)) {
                     logger.debug("记录补偿日志");
-                    txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
+                    txManagerService.sendCompensateMsg(groupId, time, info, executeConnectionError);
                 }
-            }else{
-                if(rs==1){
+            } else {
+                if (rs == 1) {
                     lastState = 1;
-                }else{
+                } else {
                     lastState = 0;
                 }
             }
@@ -121,32 +121,32 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     }
 
 
-    private int  rollbackException(TxTransactionInfo info,Throwable throwable){
+    private int rollbackException(TxTransactionInfo info, Throwable throwable) {
 
         //spring 事务机制默认回滚异常.
-        if(RuntimeException.class.isAssignableFrom(throwable.getClass())){
+        if (RuntimeException.class.isAssignableFrom(throwable.getClass())) {
             return 0;
         }
 
-        if(Error.class.isAssignableFrom(throwable.getClass())){
+        if (Error.class.isAssignableFrom(throwable.getClass())) {
             return 0;
         }
 
         //回滚异常检测.
-        for(Class<? extends Throwable> rollbackFor:info.getTxTransaction().rollbackFor()){
+        for (Class<? extends Throwable> rollbackFor : info.getTxTransaction().rollbackFor()) {
 
             //存在关系
-            if(rollbackFor.isAssignableFrom(throwable.getClass())){
+            if (rollbackFor.isAssignableFrom(throwable.getClass())) {
                 return 0;
             }
 
         }
 
         //不回滚异常检测.
-        for(Class<? extends Throwable> rollbackFor:info.getTxTransaction().noRollbackFor()){
+        for (Class<? extends Throwable> rollbackFor : info.getTxTransaction().noRollbackFor()) {
 
             //存在关系
-            if(rollbackFor.isAssignableFrom(throwable.getClass())){
+            if (rollbackFor.isAssignableFrom(throwable.getClass())) {
                 return 1;
             }
         }

@@ -33,13 +33,7 @@ public class DemoController {
     @RequestMapping("/save")
     @ResponseBody
     public int save(String name,Integer id) throws InterruptedException {
-        /*ThradsingletonInt.set(num);
-        ThradsingletonInt.set(num + ThradsingletonInt.get());*/
-        System.out.println("开始"+name);
-        Thread.sleep(6000);
-        System.out.println("结束");
-        return 2;
-        //return demoService.save(id, name);
+        return demoService.save(id, name);
     }
 
     @PostMapping("notifyResult")

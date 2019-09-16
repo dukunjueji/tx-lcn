@@ -19,6 +19,6 @@ public interface TestMapper {
     List<Test> findAll();
 
     @Insert("INSERT INTO t_test(ID, NAME) VALUES(#{id}, #{name})")
-    int save(@Param("id") String id, @Param("name") String name);
+    int save(@Param("id") Integer id, @Param("name") String name);
 
 }

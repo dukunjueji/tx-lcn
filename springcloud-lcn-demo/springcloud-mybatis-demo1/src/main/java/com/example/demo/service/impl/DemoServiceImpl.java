@@ -41,13 +41,12 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    @TxTransaction(isStart = true)
     @Transactional
     public int save(Integer id, String name) {
-        System.out.println("插入测试1数据库");
-        testMapper.save("mybatis1");
         System.out.println("插入测试2数据库");
         demo2Client.save(id, name);
+        System.out.println("插入测试1数据库");
+        testMapper.save("mybatis1");
         //int i = 1/0;
 
         //demo3Client.save();

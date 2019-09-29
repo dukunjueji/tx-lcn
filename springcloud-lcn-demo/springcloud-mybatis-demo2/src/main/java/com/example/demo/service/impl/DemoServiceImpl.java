@@ -15,7 +15,7 @@ import java.util.List;
  * Created by lorne on 2017/6/26.
  */
 @Service
-public class DemoServiceImpl implements DemoService, ITxTransaction {
+public class DemoServiceImpl implements DemoService{
 
     @Autowired
     private TestMapper testMapper;

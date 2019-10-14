@@ -16,7 +16,7 @@ public class PostgreSqlJdbcConnCreateTable {
             System.out.println("连接数据库成功！");
             stmt = c.createStatement();
             String sql = "CREATE TABLE COMPANY02 " +
-                    "(ID INT PRIMARY KEY     NOT NULL," +
+                    "(ID INT PRIMARY KEY     NOT NULL AUTO_INCREMENT," +
                     " NAME           TEXT    NOT NULL, " +
                     " AGE            INT     NOT NULL, " +
                     " ADDRESS        CHAR(50), " +

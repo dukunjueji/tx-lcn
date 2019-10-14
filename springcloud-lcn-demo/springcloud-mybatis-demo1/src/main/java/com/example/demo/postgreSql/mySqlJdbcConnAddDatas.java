@@ -4,15 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-public class PostgreSqlJdbcConnAddDatas {
+public class mySqlJdbcConnAddDatas {
     public static void main(String args[]) {
         Long startTime = System.currentTimeMillis();
         Connection c = null;
         Statement stmt = null;
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
             c = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/test", "postgres",
+                    "jdbc:mysql://127.0.0.1:3306/test?useSSL=false", "root",
                     "123456");
             c.setAutoCommit(false);
 
